@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.examsystem.mapper.BannersMapper">
+
+    <sql id="base_column">
+        id, title, description, image_url, link_url,
+        sort_order, is_active, create_time, update_time, is_deleted
+
+
+    </sql>
+    <!-- insert -->
+    <insert id="insertBanner" parameterType="com.atguigu.examsystem.entity.Banners">
+        insert into banners(id,
+                            title,
+                            description,
+                            image_url,
+                            link_url,
+                            sort_order,
+                            is_active,
+                            create_time,
+                            update_time,
+                            is_deleted)
+        values (#{id},
+                #{title},
+                #{description},
+                #{imageUrl},
+                #{linkUrl},
+                #{sortOrder},
+                #{isActive},
+                #{createTime},
+                #{updateTime},
+       #{isDeleted})
+    </insert>
+
+    <select id="selectAll" resultType="com.atguigu.examsystem.entity.Banners">
+        select
+        <include refid="base_column"/>
+        from banners
+        where 1 = 1
+        <if test='title != "" and title != null'>
+            and title = #{title}
+        </if>
+        <if test='description != null and description != ""'>
+            and description = #{description}
+        </if>
+        order by create_time desc
+    </select>
+</mapper>

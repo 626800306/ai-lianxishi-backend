@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.examsystem.mapper.QuestionsMapper">
+
+    <resultMap id="questionsResult" type="com.atguigu.examsystem.entity.Questions">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="type" column="type"/>
+        <result property="difficulty" column="difficulty"/>
+        <result property="multi" column="multi"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="score" column="score"/>
+        <result property="analysis" column="analysis"/>
+        <collection property="choices" ofType="com.atguigu.examsystem.entity.Questions$Choices">
+            <result property="content" column="content"/>
+            <result property="isCorrect" column="is_correct"/>
+        </collection>
+    </resultMap>
+    <select id="questionsPage" resultMap="questionsResult">
+        select
+        q.id,
+        q.title,
+        q.type,
+        q.difficulty,
+        q.multi,
+        q.category_id,
+        q.score,
+        q.analysis
+
+        from questions q
+
+        where is_deleted = '0'
+        <if test='keyword != null and keyword != ""'>
+            and q.title like concat('%', #{keyword}, '%')
+        </if>
+        <if test='type != null and type != ""'>
+            and q.type = #{type}
+        </if>
+        <if test='difficulty != null and difficulty != ""'>
+            and q.difficulty = #{difficulty}
+        </if>
+        <if test='categoryId != null and categoryId != ""'>
+            and q.category_id = #{categoryId}
+        </if>
+        order by q.create_time desc
+    </select>
+</mapper>

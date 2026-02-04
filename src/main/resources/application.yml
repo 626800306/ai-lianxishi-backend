@@ -1,0 +1,108 @@
+# 服务端口号
+server:
+  port: 8080
+# 服务名称
+spring:
+  application:
+    name: exam-system
+#    Hikari版
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource # 类型
+    driver-class-name: com.mysql.jdbc.Driver # 驱动
+    url: jdbc:mysql://localhost:3306/exam_system_new?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8
+    username: root # 用户名
+    password: 123456 # 密码
+    hikari:
+      connection-test-query: SELECT 1 # 自动检测连接
+      connection-timeout: 60000 # 数据库连接超时时间，默认30s
+      idle-timeout: 500000 # 空闲连接存活最大时间，默认600000（10分钟）
+      max-lifetime: 540000 # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+      maximum-pool-size: 12 # 连接池最大连接数，默认是10
+      minimum-idle: 10 # 最小空闲连接数量
+      pool-name: SPHHikariPool # 连接池名称
+  data:
+    redis:
+      host: 124.221.77.154 # Redis服务器地址
+      port: 6379 # Redis服务端口
+      password: redispass # Redis密码 (如果没有密码则不配置此项)
+      database: 0 # Redis数据库索引
+
+  servlet:
+    multipart:
+      max-file-size: 100MB # 单个文件大小限制
+      max-request-size: 200MB # 总文件大小限制
+  main:
+    allow-circular-references: true # 运行循环依赖
+
+
+
+# mybatis-plus日志配置
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations:classpath: mapper/*.xml
+  global-config:
+    db-config:
+      logic-delete-value: 1 # 逻辑删除值
+      logic-not-delete-value: 0 # 逻辑未删除值
+      logic-delete-field: isDeleted # 实体类逻辑删除值字段
+# Druid版
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource # 类型
+#    driver-class-name: com.mysql.jdbc.Driver # 驱动
+#    url: jdbc:mysql://localhost:3306/exam-system-new?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2b8
+#    druid:
+#      initial-size: 20 # 初始化连接池大小
+#      min-idle: 5  # 最小空闲数
+#      max-active: 20 # 最大激活数
+#      max-wait: 60000  # 配置获取连接等待超时的时间
+#      time-between-eviction-runs-millis: 60000  # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+#      min-evictable-idle-time-millis: 30000  # 配置一个连接在池中最小生存的时间，单位是毫秒
+#      validation-query: SELECT 1 FROM DUAL
+
+
+
+
+
+
+
+# knife4j配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.atguigu.examsystem.controller, com.atguigu.examsystem.upload.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+
+# minio相关配置
+minio:
+  endpoint: http://124.221.77.154:9001 # minio服务地址
+  accessKey: minioadmin # 访问秘钥（用户名）
+  secretKey: minioadmin # 秘密秘钥（密码）
+  bucketName: exam # bucket默认桶名称
+  secure: false # 是否启用HTTPS
+  connectTimeout: 10000 # 连接超时时间（毫秒）
+  writeTimeout: 60000 # 写入超时时间（毫秒）
+  readTimeout: 10000 # 读取超时时间（毫秒）
+  bucketPolicy: public # 存储桶策略（可选）
+
+# Kimi AI相关配置
+kimi:
+  base_url: https://api.moonshot.cn/v1/chat/completions # Kimi AI接口地址
+  api_key: sk-Hr6rvdN72tLRMmVxAugHwVsWfCfROygf0KNfJIG4xE7OdcPC # Kimi api_key
+  model: kimi-k2-turbo-preview # 使用的模型
+  temperature: 0.6 # 生成文本的随机性，范围0-1，值越小越准确，值越大越有随机性
+
+
+

@@ -34,6 +34,9 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 @Slf4j
 @SpringBootTest
 class ExamSystemApplicationTests {
@@ -488,9 +491,16 @@ class ExamSystemApplicationTests {
 
         char c = RandomUtil.randomChinese();
         System.out.println(c);
+    }
 
-
-
+    @Test
+    public void testStream() {
+        List<User> users = CollUtil.newArrayList(new User(1L, "张三"),
+                new User(2L, "李四"),
+                new User(3L, "王五"),
+                new User(4L, "赵六"));
+        Map<Long, User> map = users.stream().collect(Collectors.toMap(User::getId, Function.identity()));
+        System.out.println(map);
     }
 
 }
@@ -498,9 +508,18 @@ class ExamSystemApplicationTests {
 
 @Data
 class User {
+    private Long id;
     private String name;
     private Integer age;
     private String openId;
+
+    public User() {
+    }
+
+    public User(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 }
 @Data
 class UserA {

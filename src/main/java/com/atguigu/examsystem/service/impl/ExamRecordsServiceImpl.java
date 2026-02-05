@@ -1,7 +1,6 @@
 package com.atguigu.examsystem.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.atguigu.examsystem.dto.SubmitAnswerDto;
 import com.atguigu.examsystem.entity.*;
 import com.atguigu.examsystem.enums.ExamRecordsEnum;
 import com.atguigu.examsystem.enums.QuestionTypeEnum;
@@ -104,10 +103,21 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
                 List<Questions.Choices> choices = BeanUtil.copyToList(questionChoices, Questions.Choices.class);
                 // 选择题 设置选项
                 q.setChoices(choices);
+                String an = "";
+                // 设置答案
+                for (int i = 0; i < questionChoices.size(); i++) {
+                    QuestionChoices qc = questionChoices.get(i);
+                    if (qc.getIsCorrect()) {
+                        an += (numberToLetter(i) + ",");
+                    }
+                }
+                // 设置判断题答案 格式A,B,C
+                q.setAnswer(new Questions.Answer(an.substring(0, an.length() - 1)));
+
             }
             // 判断题/简答题
             if (QuestionTypeEnum.JUDGE.getType().equals(type) ||
-            QuestionTypeEnum.TEXT.getDesc().equals(type)) {
+                    QuestionTypeEnum.TEXT.getType().equals(type)) {
                 QuestionAnswers questionAnswers = questionAnswersMapper.selectOne(
                         Wrappers.lambdaQuery(QuestionAnswers.class).eq(QuestionAnswers::getQuestionId, questionId));
                 Questions.Answer answer = BeanUtil.copyProperties(questionAnswers, Questions.Answer.class);
@@ -123,9 +133,13 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
         return exam;
     }
 
-    @Override
-    public void submitAnswer(SubmitAnswerDto dto) {
 
-
+    public static char numberToLetter(int number) {
+        if (number < 0 || number > 25) {
+            throw new IllegalArgumentException("数字必须在0-25范围内");
+        }
+        return (char) ('A' + number);
     }
+
+
 }

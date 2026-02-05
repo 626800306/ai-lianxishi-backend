@@ -58,4 +58,8 @@ public class ExamRecords extends BaseEntity {
     @Schema(description = "试卷信息")
     @TableField(exist = false)
     private Paper paper;
+
+    @Schema(description = "题目总数")
+    @TableField(exist = false)
+    private Integer totalQuestions;
 }

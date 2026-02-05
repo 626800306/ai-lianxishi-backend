@@ -25,4 +25,13 @@ public enum QuestionTypeEnum {
     public String getDesc() {
         return desc;
     }
+
+    public static String getDescByType(String type) {
+        for (QuestionTypeEnum typeEnum : QuestionTypeEnum.values()) {
+            if (typeEnum.getType().equals(type)) {
+                return typeEnum.getDesc();
+            }
+        }
+        return "";
+    }
 }

@@ -35,10 +35,4 @@ public class ExamRecordsController {
         return Result.okData(exam);
     }
 
-    @Operation(summary = "提交答案", description = "提交答案")
-    @PostMapping("/submitAnswer")
-    public Result<String> submitAnswer(@RequestBody SubmitAnswerDto dto) {
-        examRecordsService.submitAnswer(dto);
-        return Result.okMsg("提交答案成功");
-    }
 }

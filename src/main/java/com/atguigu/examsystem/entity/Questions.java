@@ -43,7 +43,7 @@ public class Questions extends BaseEntity {
     private String analysis;
 
 
-    @Schema(description = "题目答案")
+    @Schema(description = "题目答案 判断题/简答题")
     @TableField(exist = false)
     private Answer answer;
 

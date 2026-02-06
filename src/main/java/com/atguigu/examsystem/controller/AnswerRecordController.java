@@ -3,6 +3,7 @@ package com.atguigu.examsystem.controller;
 import com.atguigu.examsystem.dto.SubmitAnswerDto;
 import com.atguigu.examsystem.service.AnswerRecordService;
 import com.atguigu.examsystem.vo.Result;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +21,7 @@ public class AnswerRecordController {
         this.answerRecordService = answerRecordService;
     }
 
+    @Schema(description = "提交答案")
     @PostMapping("/sumbitAnswer")
     public Result<String> submitAnswer(@RequestBody SubmitAnswerDto dto) {
         answerRecordService.submitAnswer(dto);

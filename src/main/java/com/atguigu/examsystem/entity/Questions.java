@@ -22,7 +22,7 @@ public class Questions extends BaseEntity {
     @TableField(value = "type")
     private String type;
 
-    @Schema(description = "题目选项")
+    @Schema(description = "选择题是否多选")
     @TableField(value = "multi")
     private Boolean multi;
 
@@ -34,7 +34,7 @@ public class Questions extends BaseEntity {
     @TableField(value = "difficulty")
     private String difficulty;
 
-    @Schema(description = "题目得分")
+    @Schema(description = "题目分数")
     @TableField(value = "score")
     private Integer score;
 

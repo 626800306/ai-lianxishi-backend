@@ -68,6 +68,38 @@ public class KimiAiService {
 
         // 返回body主体
         return response.body();
+    }
 
+    /**
+     *{
+     *   "id": "chatcmpl-69857a823144317f49f6b28d",
+     *   "object": "chat.completion",
+     *   "created": 1770355330,
+     *   "model": "kimi-k2-turbo-preview",
+     *   "choices": [
+     *     {
+     *       "index": 0,
+     *       "message": {
+     *         "role": "assistant",
+     *         "content": "本次考试得分17/20，正确率75%，表现优良，基础扎实。优势在于核心题型掌握牢固，失分主要在第2题计算细节与第4题审题偏差，暴露粗心与综合迁移不足。建议：每日限时练10分钟易错点，做题前划关键条件，完成后反向验算；周末做1道同类拓展题并写错因一句话，培养检查习惯。坚持两周，细节分即可提升。老师相信你再专注一点，下次定能突破18分，继续加油！"
+     *       },
+     *       "finish_reason": "stop"
+     *     }
+     *   ],
+     *   "usage": {
+     *     "prompt_tokens": 171,
+     *     "completion_tokens": 109,
+     *     "total_tokens": 280
+     *   }
+     * }
+     * @param body
+     * @return 返回kimi AI中content内容
+     */
+    public String kimiBodyResContent(String body) {
+        JSONObject jsonObject = JSONUtil.parseObj(body);
+        JSONArray array = (JSONArray) jsonObject.get("choices");
+        JSONObject jo = (JSONObject) array.get(0);
+        JSONObject jot = (JSONObject) jo.get("message");
+        return jot.get("content").toString();
     }
 }

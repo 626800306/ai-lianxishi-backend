@@ -1,7 +1,6 @@
 package com.atguigu.examsystem.controller;
 
 import com.atguigu.examsystem.dto.StartExamDto;
-import com.atguigu.examsystem.dto.SubmitAnswerDto;
 import com.atguigu.examsystem.entity.ExamRecords;
 import com.atguigu.examsystem.service.ExamRecordsService;
 import com.atguigu.examsystem.vo.Result;

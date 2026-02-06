@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
@@ -32,6 +33,8 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
 
     private final QuestionAnswersMapper questionAnswersMapper;
 
+    private final AnswerRecordMapper answerRecordMapper;
+
     AtomicInteger atomicIn = new AtomicInteger();
 
     public ExamRecordsServiceImpl(ExamRecordsMapper examRecordsMapper,
@@ -39,13 +42,15 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
                                   PaperQuestionMapper paperQuestionMapper,
                                   QuestionsMapper questionsMapper,
                                   QuestionChoicesMapper questionChoicesMapper,
-                                  QuestionAnswersMapper questionAnswersMapper) {
+                                  QuestionAnswersMapper questionAnswersMapper,
+                                  AnswerRecordMapper answerRecordMapper) {
         this.examRecordsMapper = examRecordsMapper;
         this.paperMapper = paperMapper;
         this.paperQuestionMapper = paperQuestionMapper;
         this.questionsMapper = questionsMapper;
         this.questionChoicesMapper = questionChoicesMapper;
         this.questionAnswersMapper = questionAnswersMapper;
+        this.answerRecordMapper = answerRecordMapper;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
         if (examRecords != null) {
             // 设置切屏次数
             examRecords.setWindowSwitches(atomicIn.getAndIncrement());
-            // 跟新考试记录
+            // 更新考试记录
             examRecordsMapper.update(examRecords,
                     new UpdateWrapper<ExamRecords>()
                             .eq("exam_id", examId)
@@ -90,7 +95,8 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
         List<PaperQuestion> paperQuestions = paperQuestionMapper.selectList(new LambdaQueryWrapper<PaperQuestion>().eq(PaperQuestion::getPaperId, exam.getExamId()).orderByDesc(BaseEntity::getCreateTime));
         List<Long> questionIdList = paperQuestions.stream().map(PaperQuestion::getQuestionId).toList();
         List<Questions> questions = questionsMapper.selectByIds(questionIdList);
-
+        // 对questions排序  CHOICE->JUDGE->TEXT
+        sortQuestions(questions);
         // 设置题目选择题：选项；
         // 判断题/简答题：答案；
         questions.stream().forEach(q -> {
@@ -130,16 +136,34 @@ public class ExamRecordsServiceImpl extends ServiceImpl<ExamRecordsMapper, ExamR
 
         exam.setPaper(paper);
 
+        // 答题记录 orderByAsc(BaseEntity::getId) 按CHOICE->JUDGE->TEXT试题类型排序
+        List<AnswerRecord> answerRecords = answerRecordMapper.selectList(
+                Wrappers.lambdaQuery(AnswerRecord.class).eq(AnswerRecord::getExamRecordId, id).orderByAsc(BaseEntity::getId));
+        exam.setAnswerRecords(answerRecords);
+
         return exam;
     }
 
 
-    public static char numberToLetter(int number) {
+    public char numberToLetter(int number) {
         if (number < 0 || number > 25) {
             throw new IllegalArgumentException("数字必须在0-25范围内");
         }
         return (char) ('A' + number);
     }
 
+    public void sortQuestions(List<Questions> questions) {
+        Map<String, Integer> typeOrder = Map.of(
+                "CHOICE", 1,
+                "JUDGE", 2,
+                "TEXT", 3
+        );
+
+        questions.sort((q1, q2) -> {
+            Integer order1 = typeOrder.getOrDefault(q1.getType(), Integer.MAX_VALUE);
+            Integer order2 = typeOrder.getOrDefault(q2.getType(), Integer.MAX_VALUE);
+            return order1.compareTo(order2);
+        });
+    }
 
 }

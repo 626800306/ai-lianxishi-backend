@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(description = "考试记录表")
 @Data
@@ -59,7 +60,8 @@ public class ExamRecords extends BaseEntity {
     @TableField(exist = false)
     private Paper paper;
 
-    @Schema(description = "题目总数")
+    @Schema(description = "答题记录")
     @TableField(exist = false)
-    private Integer totalQuestions;
+    private List<AnswerRecord> answerRecords;
+
 }
